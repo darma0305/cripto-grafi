@@ -13,22 +13,7 @@ Tujuannya buat belajar cara enkripsi dan dekripsi data (misalnya pakai `crypto` 
 
 ---
 
-## 🧱 Struktur Folder
-```
-project-folder/
-│
-├── src/
-│   ├── routes/
-│   │   └── cryptoRoute.js
-│   ├── controllers/
-│   │   └── cryptoController.js
-│   ├── app.js
-│
-├── .env
-├── package.json
-├── .gitignore
-└── README.md
-```
+
 
 ---
 
