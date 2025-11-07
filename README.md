@@ -11,8 +11,6 @@ Tujuannya buat belajar cara enkripsi dan dekripsi data (misalnya pakai `crypto` 
 - 🧠 Dibangun dengan Express.js
 - 📦 Struktur clean dan simple
 
----
-
 
 
 ---
@@ -21,7 +19,7 @@ Tujuannya buat belajar cara enkripsi dan dekripsi data (misalnya pakai `crypto` 
 
 1. **Clone repo**
    ```bash
-   git clone https://github.com/username/simple-cryptography-api.git
+   git clone https://github.com/darma0305/simple-cryptography-api.git
    cd simple-cryptography-api
    ```
 
