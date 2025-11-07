@@ -5,8 +5,10 @@ require("dotenv").config();
 class Model_r {
   constructor(req) {
     this.req = req;
+    this.res = req.res;
   }
 
+  // === Fungsi Dekripsi Password ===
   decryptPassword(encryptedText) {
     const secretKey = process.env.SECRET_KEY;
     const [ivHex, encrypted] = encryptedText.split(":");
@@ -17,12 +19,13 @@ class Model_r {
       Buffer.from(secretKey, "utf8"),
       iv
     );
+
     let decrypted = decipher.update(encrypted, "hex", "utf8");
     decrypted += decipher.final("utf8");
     return decrypted;
   }
 
-  // Fungsi enkripsi password pakai secret key dari .env
+  // === Fungsi Enkripsi Password ===
   encryptPassword(password) {
     const secretKey = process.env.SECRET_KEY;
     const iv = crypto.randomBytes(16); // IV unik tiap enkripsi
@@ -32,6 +35,7 @@ class Model_r {
       Buffer.from(secretKey, "utf8"),
       iv
     );
+
     let encrypted = cipher.update(password, "utf8", "hex");
     encrypted += cipher.final("hex");
 
@@ -39,28 +43,43 @@ class Model_r {
     return iv.toString("hex") + ":" + encrypted;
   }
 
-  // === REGISTER USER ===
+  // === REGISTER USER (dengan transaksi) ===
   async register() {
+    const t = await User.sequelize.transaction();
     try {
       const { name, role, email, password } = this.req.body;
 
       // Enkripsi password pakai secret key
       const encryptedPassword = this.encryptPassword(password);
 
-      const newUser = await User.create({
-        name,
-        role,
-        email,
-        password: encryptedPassword,
-      });
+      // Simpan user ke database (pakai transaksi)
+      const newUser = await User.create(
+        {
+          name,
+          role,
+          email,
+          password: encryptedPassword,
+        },
+        { transaction: t }
+      );
+
+      // Commit transaksi kalau sukses
+      await t.commit();
 
       return {
+        success: true,
         message: "User berhasil didaftarkan dengan password terenkripsi!",
         data: newUser,
       };
     } catch (error) {
+      // Rollback transaksi kalau error
+      await t.rollback();
       console.error("Error register user:", error);
-      throw error;
+      return {
+        success: false,
+        message: "Gagal mendaftarkan user",
+        error: error.message,
+      };
     }
   }
 
@@ -68,10 +87,17 @@ class Model_r {
   async daftar_user() {
     try {
       const Users = await User.findAll();
-      return Users;
+      return {
+        success: true,
+        data: Users,
+      };
     } catch (error) {
       console.error("Error fetching User data:", error);
-      throw error;
+      return {
+        success: false,
+        message: "Gagal mengambil data user",
+        error: error.message,
+      };
     }
   }
 }

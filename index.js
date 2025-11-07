@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Definisikan router yang ingin diimpor secara dinamis
-const arr_router = []; // Kamu tinggal menambah router baru di sini
+const arr_router = ["user"]; // Kamu tinggal menambah router baru di sini
 
 // Inisialisasi objek untuk menampung semua router
 let arr = {};
