@@ -43,6 +43,52 @@ class Model_r {
     return iv.toString("hex") + ":" + encrypted;
   }
 
+  // === LOGIN USER ===
+async login() {
+  try {
+    const { email, password } = this.req.body;
+
+    // Cek apakah user ada
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return {
+        success: false,
+        message: "Email tidak ditemukan!",
+      };
+    }
+
+    // Dekripsi password dari database
+    const decryptedPassword = this.decryptPassword(user.password);
+
+    // Bandingkan password input dengan hasil dekripsi
+    if (password !== decryptedPassword) {
+      return {
+        success: false,
+        message: "Password salah!",
+      };
+    }
+
+    // Kalau cocok
+    return {
+      success: true,
+      message: "Login berhasil!",
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
+  } catch (error) {
+    console.error("Error login user:", error);
+    return {
+      success: false,
+      message: "Terjadi kesalahan saat login",
+      error: error.message,
+    };
+  }
+}
+
   // === REGISTER USER (dengan transaksi) ===
   async register() {
     const t = await User.sequelize.transaction();

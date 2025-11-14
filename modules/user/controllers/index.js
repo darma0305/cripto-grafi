@@ -55,3 +55,9 @@ exports.register = async (req, res) => {
     });
   }
 };
+
+exports.login = async (req, res) => {
+  const model = new Model_r(req);
+  const result = await model.login();
+  res.json(result);
+};

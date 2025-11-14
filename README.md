@@ -104,4 +104,4 @@ MIT License © 2025
 ---
 
 ## ✨ Author
-Made with ❤️ by **DARMA & FITRA FUADI**
+Made with ❤️ by **DARMA & MUHAMMAD FITRA FUADI**
